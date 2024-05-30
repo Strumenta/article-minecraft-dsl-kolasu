@@ -32,18 +32,21 @@ class MinecraftModParser : KolasuParser<Mod, MinecraftParser, ModContext, Kolasu
         considerPosition: Boolean,
         issues: MutableList<Issue>,
         source: Source?
-    ): Mod {
-        return MinecraftParseTreeToASTTransformer(issues, source).transform(parseTreeRoot) as Mod
+    ): Mod? {
+        return MinecraftParseTreeToASTTransformer(issues, source).transform(parseTreeRoot) as Mod?
     }
 }
 
 class MinecraftParseTreeToASTTransformer(
     issues: MutableList<Issue>,
     source: Source?
-) : ParseTreeToASTTransformer(issues, source = source) {
+) : ParseTreeToASTTransformer(issues, false, source) {
     init {
         registerNodeFactory<ModContext, Mod> {
-            Mod(id.text, name.text, stringContents(version)!!, stringContents(license) ?: "")
+            if (exception == null) {
+                val name = if (name.type == MinecraftLexer.NAME) name.text else stringContents(name)!!
+                Mod(id.text, name, stringContents(version)!!, stringContents(license) ?: "")
+            } else null
         }
     }
 
