@@ -22,7 +22,7 @@ class ParserTest {
         assertEquals("foo", mod.name)
         assertEquals("com.strumenta.foo", mod.id)
         assertEquals("1.2.3", mod.version)
-        assertEquals("", mod.license)
+        assertEquals(null, mod.license)
 
         result = MinecraftModParser().parse("""mod "my foo mod" (com.strumenta.foo@"1.2.3") {}""")
         assertEquals(listOf(), result.issues)
@@ -31,7 +31,7 @@ class ParserTest {
         assertEquals("my foo mod", mod.name)
         assertEquals("com.strumenta.foo", mod.id)
         assertEquals("1.2.3", mod.version)
-        assertEquals("", mod.license)
+        assertEquals(null, mod.license)
     }
 
 }

@@ -12,4 +12,4 @@ pluginManagement {
     }
 }
 
-include("ast")
+include("ast", "codegen")

@@ -19,7 +19,10 @@ data class Mod(
     val id: String,
     val name: String,
     val version: String,
-    val license: String
+    val license: String? = null,
+    val groupId: String? = null,
+    val authors: List<String> = listOf(),
+    val description: String = "The '$name' mod."
 ) : Node()
 
 class MinecraftModParser : KolasuParser<Mod, MinecraftParser, ModContext, KolasuANTLRToken>(ANTLRTokenFactory()) {
@@ -45,7 +48,7 @@ class MinecraftParseTreeToASTTransformer(
         registerNodeFactory<ModContext, Mod> {
             if (exception == null) {
                 val name = if (name.type == MinecraftLexer.NAME) name.text else stringContents(name)!!
-                Mod(id.text, name, stringContents(version)!!, stringContents(license) ?: "")
+                Mod(id.text, name, stringContents(version)!!, stringContents(license))
             } else null
         }
     }

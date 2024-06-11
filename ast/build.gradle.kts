@@ -8,7 +8,7 @@ plugins {
 }
 
 dependencies {
-    implementation("com.strumenta.kolasu:kolasu-core:1.5.56")
+    api("com.strumenta.kolasu:kolasu-core:1.5.56")
     antlr("org.antlr:antlr4:4.13.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }
