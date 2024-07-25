@@ -13,11 +13,15 @@ fun generate(mod: Mod, sdkDir: File) {
     if (!sdkDir.isDirectory) {
         throw IllegalArgumentException("Not a directory: $sdkDir")
     }
+    generateGradleProperties(sdkDir, mod)
+    patchModClass(sdkDir, mod)
+}
+
+private fun generateGradleProperties(sdkDir: File, mod: Mod) {
     val gradlePropertiesFile = File(sdkDir, "gradle.properties")
-    val params = Parameters()
     val builder =
         FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration::class.java)
-            .configure(params.properties().setFile(gradlePropertiesFile))
+            .configure(Parameters().properties().setFile(gradlePropertiesFile))
     val config: Configuration = builder.configuration
     config.setProperty("mod_id", mod.id)
     config.setProperty("mod_name", mod.name)
@@ -31,6 +35,13 @@ fun generate(mod: Mod, sdkDir: File) {
     config.setProperty("mod_authors", mod.authors.joinToString(", "))
     config.setProperty("mod_description", mod.description)
     builder.save()
+}
+
+fun patchModClass(sdkDir: File, mod: Mod) {
+    val modClassFile = File(sdkDir, "src/main/java/com/example/examplemod/ExampleMod.java")
+    val newText = modClassFile.readText()
+        .replace(Regex("(public static final String MODID = \").*?\";"), "$1${mod.id}\";")
+    modClassFile.writeText(newText)
 }
 
 fun main() {
