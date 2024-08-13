@@ -8,7 +8,6 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder
 import org.apache.commons.configuration2.builder.fluent.Parameters
 import java.io.File
 
-
 fun generate(mod: Mod, sdkDir: File) {
     if (!sdkDir.isDirectory) {
         throw IllegalArgumentException("Not a directory: $sdkDir")

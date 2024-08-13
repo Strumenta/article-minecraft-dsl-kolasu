@@ -2,6 +2,7 @@ package com.strumenta.articles.minecraftdsl.ast
 
 import com.strumenta.articles.minecraftdsl.antlr.MinecraftLexer
 import com.strumenta.articles.minecraftdsl.antlr.MinecraftParser
+import com.strumenta.articles.minecraftdsl.antlr.MinecraftParser.BlockContext
 import com.strumenta.articles.minecraftdsl.antlr.MinecraftParser.ModContext
 import com.strumenta.kolasu.mapping.ParseTreeToASTTransformer
 import com.strumenta.kolasu.model.Node
@@ -22,8 +23,11 @@ data class Mod(
     val license: String? = null,
     val groupId: String? = null,
     val authors: List<String> = listOf(),
-    val description: String = "The '$name' mod."
+    val description: String = "The '$name' mod.",
+    var blocks: List<Block> = listOf()
 ) : Node()
+
+data class Block(val name: String) : Node()
 
 class MinecraftModParser : KolasuParser<Mod, MinecraftParser, ModContext, KolasuANTLRToken>(ANTLRTokenFactory()) {
     override fun createANTLRLexer(charStream: CharStream): Lexer = MinecraftLexer(charStream)
@@ -49,7 +53,12 @@ class MinecraftParseTreeToASTTransformer(
             if (exception == null) {
                 val name = if (name.type == MinecraftLexer.NAME) name.text else stringContents(name)!!
                 Mod(id.text, name, stringContents(version)!!, stringContents(license))
-            } else null
+            } else {
+                null
+            }
+        }.withChild(Mod::blocks, ModContext::block)
+        registerNodeFactory<BlockContext, Block> {
+            Block(name.text)
         }
     }
 

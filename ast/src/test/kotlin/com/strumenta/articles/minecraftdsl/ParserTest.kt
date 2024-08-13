@@ -34,4 +34,16 @@ class ParserTest {
         assertEquals(null, mod.license)
     }
 
+    @Test
+    fun testModWithBlock() {
+        val result = MinecraftModParser().parse(
+            """mod foo (com.strumenta.foo@"1.2.3") {
+            |   block blbl1 {}
+            |   block blbl2 {}
+            |}""".trimMargin())
+        assertEquals(listOf(), result.issues)
+        val mod = result.root
+        assertNotNull(mod)
+        assertEquals(listOf("blbl1", "blbl2"), mod.blocks.map { it.name })
+    }
 }
